@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <table border="2" cellpadding="10" cellspacing="0" width="100%">
+      <thead>
+        <tr>
+          <th>Sr No</th>
+          <th>Title</th>
+          <th>Body</th>
+        </tr>
+      </thead>
+      <tbody id="tableData"></tbody>
+    </table>
+  </body>
+</html>
+
+<script>
+  // Promises - Pending, Resolve, Reject
+  // then(), catch()
+
+//   new Promise((Resolve, Reject) => {
+//     let age = 2;
+
+//     if (age > 18) {
+//       Resolve("Eligible for Driving License...");
+//     } else {
+//       Reject("Not Eligible for Driving License...");
+//     }
+//   })
+//     .then((data) => console.log(data))
+//     .catch((err) => console.log(err));
+
+  // API - Application Programming Interface
+  // Server(Data) --> API
+  // Call API --> Generate Request (Server) --> Accept/Reject Request --> Accept (Response(Data)) --> Reject(Error Throw)
+
+  // JSON - JavaScript Object Notation
+  // fetch()
+
+  fetch("https://api.rootnet.in/covid19-in/stats/latest")
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      return response.json();
+    })
+    .then((data) => {
+      const tableBody = document.getElementById("tableData");
+      const regionalData = data.data.regional;
+
+      regionalData.forEach((item, index) => {
+        const row = document.createElement("tr");
+
+        row.innerHTML = `
+          <td>${index + 1}</td>
+          <td>${item.loc}</td>
+          <td>
+            <strong>Confirmed Cases:</strong> ${item.totalConfirmed}<br>
+            <strong>Recovered:</strong> ${item.discharged}<br>
+            <strong>Deaths:</strong> ${item.deaths}
+          </td>
+        `;
+
+        tableBody.appendChild(row);
+      });
+    })
+    .catch((error) => {
+      console.error("Error fetching the API:", error);
+    });
+</script>
